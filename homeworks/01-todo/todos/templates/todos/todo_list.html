@@ -1,0 +1,190 @@
+{% extends 'todos/base.html' %}
+
+{% block title %}Todo List{% endblock %}
+
+{% block content %}
+<div class="header-section text-center">
+    <h1 class="display-4 fw-bold mb-3">
+        <i class="bi bi-check2-square"></i> My Todo List
+    </h1>
+    <p class="lead text-muted">Stay organized and productive</p>
+    <a href="{% url 'todo_create' %}" class="btn btn-primary btn-lg mt-3">
+        <i class="bi bi-plus-circle"></i> Create New Todo
+    </a>
+</div>
+
+<!-- Stats Cards -->
+<div class="row mb-4">
+    <div class="col-md-3 col-sm-6 mb-3">
+        <div class="stats-card text-center">
+            <h3 class="mb-1">{{ total_count }}</h3>
+            <p class="mb-0 text-muted">Total Tasks</p>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6 mb-3">
+        <div class="stats-card text-center">
+            <h3 class="mb-1 text-success">{{ resolved_count }}</h3>
+            <p class="mb-0 text-muted">Resolved</p>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6 mb-3">
+        <div class="stats-card text-center">
+            <h3 class="mb-1 text-warning">{{ pending_count }}</h3>
+            <p class="mb-0 text-muted">Pending</p>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6 mb-3">
+        <div class="stats-card text-center">
+            <h3 class="mb-1 text-danger">{{ overdue_count }}</h3>
+            <p class="mb-0 text-muted">Overdue</p>
+        </div>
+    </div>
+</div>
+
+<div class="card p-4">
+    <!-- Filter and View Toggle -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap mb-4">
+        <div class="filter-buttons d-flex flex-wrap">
+            <a href="?filter=all&view={{ view_mode }}" 
+               class="btn filter-btn {% if filter_status == 'all' %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                <i class="bi bi-list-ul"></i> All
+            </a>
+            <a href="?filter=pending&view={{ view_mode }}" 
+               class="btn filter-btn {% if filter_status == 'pending' %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                <i class="bi bi-clock"></i> Pending
+            </a>
+            <a href="?filter=resolved&view={{ view_mode }}" 
+               class="btn filter-btn {% if filter_status == 'resolved' %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                <i class="bi bi-check-circle"></i> Resolved
+            </a>
+            <a href="?filter=overdue&view={{ view_mode }}" 
+               class="btn filter-btn {% if filter_status == 'overdue' %}btn-primary{% else %}btn-outline-danger{% endif %}">
+                <i class="bi bi-exclamation-triangle"></i> Overdue
+            </a>
+        </div>
+        
+        <div class="btn-group view-toggle-btn" role="group">
+            <a href="?filter={{ filter_status }}&view=grid" 
+               class="btn {% if view_mode == 'grid' %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                <i class="bi bi-grid-3x3-gap"></i> Grid
+            </a>
+            <a href="?filter={{ filter_status }}&view=list" 
+               class="btn {% if view_mode == 'list' %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                <i class="bi bi-list"></i> List
+            </a>
+        </div>
+    </div>
+
+    {% if todos %}
+        {% if view_mode == 'list' %}
+            <!-- List View -->
+            <div class="list-group">
+                {% for todo in todos %}
+                    <div class="list-group-item todo-list-item {% if todo.is_resolved %}resolved{% elif todo.is_overdue %}overdue{% endif %}">
+                        <div class="d-flex w-100 justify-content-between align-items-start">
+                            <div class="flex-grow-1">
+                                <h5 class="mb-1 {% if todo.is_resolved %}text-decoration-line-through text-muted{% endif %}">
+                                    {{ todo.title }}
+                                    {% if todo.is_resolved %}
+                                        <span class="badge bg-success ms-2">
+                                            <i class="bi bi-check-circle"></i> Resolved
+                                        </span>
+                                    {% elif todo.is_overdue %}
+                                        <span class="badge bg-danger ms-2">
+                                            <i class="bi bi-exclamation-triangle"></i> Overdue
+                                        </span>
+                                    {% endif %}
+                                </h5>
+                                {% if todo.description %}
+                                    <p class="mb-2 text-muted">{{ todo.description }}</p>
+                                {% endif %}
+                                <div class="d-flex flex-wrap gap-3 small text-muted">
+                                    {% if todo.due_date %}
+                                        <span><i class="bi bi-calendar-event"></i> Due: {{ todo.due_date|date:"M d, Y H:i" }}</span>
+                                    {% endif %}
+                                    <span><i class="bi bi-clock-history"></i> Created: {{ todo.created_at|date:"M d, Y" }}</span>
+                                </div>
+                            </div>
+                            <div class="btn-group btn-group-sm" role="group">
+                                <a href="{% url 'todo_toggle_resolved' todo.pk %}" 
+                                   class="btn {% if todo.is_resolved %}btn-warning{% else %}btn-success{% endif %}">
+                                    <i class="bi bi-{% if todo.is_resolved %}arrow-counterclockwise{% else %}check{% endif %}"></i>
+                                </a>
+                                <a href="{% url 'todo_edit' todo.pk %}" class="btn btn-primary">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a href="{% url 'todo_delete' todo.pk %}" class="btn btn-danger">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <!-- Grid View -->
+            <div class="row">
+                {% for todo in todos %}
+                    <div class="col-md-6 col-lg-4 mb-3">
+                        <div class="card todo-card {% if todo.is_resolved %}resolved{% elif todo.is_overdue %}overdue{% endif %} p-3">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h5 class="card-title mb-0 {% if todo.is_resolved %}text-decoration-line-through text-muted{% endif %}">
+                                    {{ todo.title }}
+                                </h5>
+                                {% if todo.is_resolved %}
+                                    <span class="badge bg-success">
+                                        <i class="bi bi-check-circle"></i> Resolved
+                                    </span>
+                                {% elif todo.is_overdue %}
+                                    <span class="badge bg-danger">
+                                        <i class="bi bi-exclamation-triangle"></i> Overdue
+                                    </span>
+                                {% endif %}
+                            </div>
+                            
+                            {% if todo.description %}
+                                <p class="card-text text-muted small mb-2">{{ todo.description|truncatewords:15 }}</p>
+                            {% endif %}
+                            
+                            {% if todo.due_date %}
+                                <p class="text-muted small mb-2">
+                                    <i class="bi bi-calendar-event"></i> 
+                                    Due: {{ todo.due_date|date:"M d, Y H:i" }}
+                                </p>
+                            {% endif %}
+                            
+                            <p class="text-muted small mb-3">
+                                <i class="bi bi-clock-history"></i> 
+                                Created: {{ todo.created_at|date:"M d, Y" }}
+                            </p>
+                            
+                            <div class="btn-group w-100" role="group">
+                                <a href="{% url 'todo_toggle_resolved' todo.pk %}" 
+                                   class="btn btn-sm {% if todo.is_resolved %}btn-warning{% else %}btn-success{% endif %}">
+                                    <i class="bi bi-{% if todo.is_resolved %}arrow-counterclockwise{% else %}check{% endif %}"></i>
+                                    {% if todo.is_resolved %}Unresolve{% else %}Resolve{% endif %}
+                                </a>
+                                <a href="{% url 'todo_edit' todo.pk %}" class="btn btn-sm btn-primary">
+                                    <i class="bi bi-pencil"></i> Edit
+                                </a>
+                                <a href="{% url 'todo_delete' todo.pk %}" class="btn btn-sm btn-danger">
+                                    <i class="bi bi-trash"></i> Delete
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-inbox display-1 text-muted"></i>
+            <h3 class="mt-3 text-muted">No todos found</h3>
+            <p class="text-muted">Create your first todo to get started!</p>
+            <a href="{% url 'todo_create' %}" class="btn btn-primary mt-3">
+                <i class="bi bi-plus-circle"></i> Create Todo
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

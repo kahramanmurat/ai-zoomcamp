@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Todo App{% endblock %}</title>
+    {% load static %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --facebook-blue: #1877F2;
+            --facebook-blue-dark: #166FE5;
+            --facebook-blue-light: #E7F3FF;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --dark-color: #1f2937;
+            --light-bg: #f9fafb;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1877F2 0%, #42A5F5 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .main-container {
+            padding: 2rem 0;
+        }
+
+        .datetime-display {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            font-weight: 500;
+            color: var(--facebook-blue);
+            z-index: 1000;
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .btn-primary {
+            background: var(--facebook-blue);
+            border: none;
+            border-radius: 8px;
+            padding: 0.5rem 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background: var(--facebook-blue-dark);
+            transform: scale(1.05);
+        }
+
+        .btn-outline-primary {
+            border-color: var(--facebook-blue);
+            color: var(--facebook-blue);
+        }
+
+        .btn-outline-primary:hover {
+            background: var(--facebook-blue);
+            border-color: var(--facebook-blue);
+        }
+
+        .todo-card {
+            border-left: 4px solid var(--facebook-blue);
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+        }
+
+        .todo-card:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .todo-card.resolved {
+            border-left-color: var(--success-color);
+            opacity: 0.7;
+        }
+
+        .todo-card.overdue {
+            border-left-color: var(--danger-color);
+        }
+
+        .todo-list-item {
+            border-left: 4px solid var(--facebook-blue);
+            transition: all 0.3s ease;
+            margin-bottom: 0.5rem;
+        }
+
+        .todo-list-item.resolved {
+            border-left-color: var(--success-color);
+            opacity: 0.7;
+        }
+
+        .todo-list-item.overdue {
+            border-left-color: var(--danger-color);
+        }
+
+        .badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
+        .filter-buttons {
+            margin-bottom: 2rem;
+        }
+
+        .filter-btn {
+            margin-right: 0.5rem;
+            border-radius: 20px;
+            padding: 0.5rem 1.5rem;
+        }
+
+        .header-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .stats-card {
+            background: var(--facebook-blue-light);
+            border-left: 4px solid var(--facebook-blue);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+        }
+
+        .view-toggle-btn {
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div class="datetime-display">
+        <i class="bi bi-clock"></i> <span id="current-datetime"></span>
+    </div>
+    
+    <div class="container main-container">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function updateDateTime() {
+            const now = new Date();
+            const options = { 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric', 
+                hour: '2-digit', 
+                minute: '2-digit',
+                second: '2-digit'
+            };
+            document.getElementById('current-datetime').textContent = now.toLocaleString('en-US', options);
+        }
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
+

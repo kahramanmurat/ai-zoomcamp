@@ -28,78 +28,90 @@ class Command(BaseCommand):
                 self.style.WARNING('All existing tasks have been deleted.')
             )
 
-        # Create example tasks
+        # Create example tasks - Social life tasks for a 40s man with wife and son
         examples = [
             {
-                'title': 'Complete Django TODO application',
-                'description': 'Finish building the TODO app with all CRUD operations, filtering, and statistics',
-                'due_date': timezone.now() - timedelta(days=1),  # Overdue
+                'title': 'Plan family weekend trip',
+                'description': 'Research and book activities for family weekend getaway with wife and son',
+                'due_date': timezone.now() - timedelta(days=2),  # Overdue
                 'is_resolved': False,
             },
             {
-                'title': 'Review project documentation',
-                'description': 'Read through README.md and TESTING.md files',
+                'title': 'Attend son\'s soccer game',
+                'description': 'Saturday morning game at 10 AM - bring camera and snacks',
                 'due_date': timezone.now() + timedelta(days=2),
                 'is_resolved': False,
             },
             {
-                'title': 'Set up development environment',
-                'description': 'Install Django, create virtual environment, and configure project settings',
+                'title': 'Organize dinner party with friends',
+                'description': 'Invite the old college friends for a dinner party at our place',
                 'due_date': timezone.now() - timedelta(days=3),
                 'is_resolved': True,  # Already done
             },
             {
-                'title': 'Learn Django ORM',
-                'description': 'Study Django models, queries, and database relationships',
+                'title': 'Book restaurant for anniversary dinner',
+                'description': 'Make reservation for our 15th wedding anniversary next month',
                 'due_date': timezone.now() + timedelta(days=7),
                 'is_resolved': False,
             },
             {
-                'title': 'Push code to GitHub',
-                'description': 'Upload the project to the GitHub repository',
+                'title': 'Call mom to check in',
+                'description': 'Weekly phone call with mom - catch up on family news',
                 'due_date': timezone.now() - timedelta(hours=5),  # Overdue
                 'is_resolved': False,
             },
             {
-                'title': 'Write unit tests',
-                'description': 'Create test cases for models, views, and forms',
+                'title': 'Plan son\'s birthday party',
+                'description': 'Organize birthday party - invite friends, order cake, plan activities',
                 'due_date': timezone.now() + timedelta(days=5),
                 'is_resolved': False,
             },
             {
-                'title': 'Design database schema',
-                'description': 'Plan the database structure for the TODO application',
-                'due_date': timezone.now() - timedelta(days=5),
+                'title': 'Attend neighborhood BBQ',
+                'description': 'Community BBQ event at the park - bring dish to share',
+                'due_date': timezone.now() - timedelta(days=4),
                 'is_resolved': True,  # Already done
             },
             {
-                'title': 'Add Facebook blue theme',
-                'description': 'Update the UI with Facebook blue color scheme',
-                'due_date': timezone.now(),
-                'is_resolved': True,
-            },
-            {
-                'title': 'Implement list and grid views',
-                'description': 'Add toggle between list and grid view modes',
-                'due_date': timezone.now(),
-                'is_resolved': True,
-            },
-            {
-                'title': 'Add task statistics',
-                'description': 'Display counts for total, resolved, pending, and overdue tasks',
-                'due_date': timezone.now(),
-                'is_resolved': True,
-            },
-            {
-                'title': 'Fix authentication issues',
-                'description': 'Resolve GitHub push authentication problems',
-                'due_date': timezone.now() + timedelta(hours=2),
+                'title': 'Date night with wife',
+                'description': 'Movie night or dinner - just the two of us',
+                'due_date': timezone.now() + timedelta(days=1),
                 'is_resolved': False,
             },
             {
-                'title': 'Create user documentation',
-                'description': 'Write comprehensive README with setup instructions',
-                'due_date': timezone.now() + timedelta(days=1),
+                'title': 'Help son with school project',
+                'description': 'Assist with science fair project due next week',
+                'due_date': timezone.now() + timedelta(days=3),
+                'is_resolved': False,
+            },
+            {
+                'title': 'Organize family photos',
+                'description': 'Sort through recent vacation photos and create album',
+                'due_date': timezone.now() + timedelta(days=10),
+                'is_resolved': False,
+            },
+            {
+                'title': 'Attend work colleague\'s retirement party',
+                'description': 'Celebrate long-time colleague\'s retirement this Friday evening',
+                'due_date': timezone.now() + timedelta(days=2),
+                'is_resolved': False,
+            },
+            {
+                'title': 'Plan summer vacation',
+                'description': 'Research and plan family summer vacation destinations',
+                'due_date': timezone.now() + timedelta(days=14),
+                'is_resolved': False,
+            },
+            {
+                'title': 'Fix broken bike with son',
+                'description': 'Teach son how to fix his bike - bonding time',
+                'due_date': timezone.now() - timedelta(days=1),
+                'is_resolved': True,
+            },
+            {
+                'title': 'Meet friends for coffee',
+                'description': 'Catch up with the guys at the local coffee shop',
+                'due_date': timezone.now() + timedelta(days=4),
                 'is_resolved': False,
             },
         ]

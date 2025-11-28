@@ -12,10 +12,14 @@ def todo_list(request):
     # Calculate counts
     total_count = all_todos.count()
     resolved_count = all_todos.filter(is_resolved=True).count()
-    pending_count = all_todos.filter(is_resolved=False).count()
     
     # Calculate overdue count (todos that are overdue and not resolved)
     overdue_count = len([todo for todo in all_todos if todo.is_overdue()])
+    
+    # Calculate pending count (unresolved but NOT overdue)
+    unresolved_todos = all_todos.filter(is_resolved=False)
+    overdue_todos = [todo for todo in unresolved_todos if todo.is_overdue()]
+    pending_count = unresolved_todos.count() - len(overdue_todos)
     
     # Filter by status if requested
     filter_status = request.GET.get('filter', 'all')
@@ -23,14 +27,22 @@ def todo_list(request):
     
     todos = all_todos
     if filter_status == 'pending':
-        todos = todos.filter(is_resolved=False)
+        # Show only pending tasks (unresolved but NOT overdue)
+        # First get all unresolved tasks, then exclude overdue ones
+        unresolved_todos = all_todos.filter(is_resolved=False)
+        overdue_todos = [todo for todo in unresolved_todos if todo.is_overdue()]
+        overdue_ids = [todo.id for todo in overdue_todos]
+        # Get pending = unresolved minus overdue
+        todos = unresolved_todos.exclude(id__in=overdue_ids) if overdue_ids else unresolved_todos
     elif filter_status == 'resolved':
+        # Show only resolved tasks
         todos = todos.filter(is_resolved=True)
     elif filter_status == 'overdue':
-        # For overdue, we need to filter in Python since is_overdue() is a model method
+        # Show only overdue tasks (past due date AND not resolved)
         overdue_todos = [todo for todo in all_todos if todo.is_overdue()]
         todo_ids = [todo.id for todo in overdue_todos]
         todos = all_todos.filter(id__in=todo_ids) if todo_ids else all_todos.none()
+    # else: filter_status == 'all' - show all todos
     
     context = {
         'todos': todos,

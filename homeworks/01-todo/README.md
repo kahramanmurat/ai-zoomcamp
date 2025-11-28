@@ -75,7 +75,27 @@ Starting development server at http://127.0.0.1:8000/
 Quit the server with CONTROL-C.
 ```
 
-### Step 5: Access the Application
+### Step 5: (Optional) Create Example Tasks
+
+Populate the database with example tasks to see the application in action:
+
+```bash
+python manage.py create_example_tasks
+```
+
+This will create 12 example tasks including:
+- Some resolved tasks
+- Some pending tasks  
+- Some overdue tasks
+- Tasks with various due dates
+
+To clear all existing tasks and create fresh examples:
+
+```bash
+python manage.py create_example_tasks --clear
+```
+
+### Step 6: Access the Application
 
 Open your web browser and navigate to:
 
